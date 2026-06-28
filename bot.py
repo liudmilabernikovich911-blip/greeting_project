@@ -22,12 +22,13 @@ from telegram.ext import (
 
 load_dotenv()
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
+
+BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 ADMIN_IDS = os.getenv("ADMIN_IDS", "")
 PORT = int(os.getenv("PORT", "10000"))
 
 if not BOT_TOKEN:
-    raise ValueError("❌ BOT_TOKEN не найден! Создай файл .env")
+    raise ValueError(" TELEGRAM_BOT_TOKEN не найден! Создай файл .env")
 
 CARDS_DIR = Path("dist")
 CARDS_DIR.mkdir(parents=True, exist_ok=True)
@@ -74,26 +75,26 @@ def create_card(name: str, occasion: str = "birthday", language: str = None) -> 
         "birthday": {
             "bg": "#FFE4E1", "border": "#FF69B4",
             "title_color": "#C71585", "name_color": "#8B008B", "text_color": "#4B0082",
-            "ru": {"title": "🎉 С Днём Рождения! 🎂",
+            "ru": {"title": " С Днём Рождения! ",
                    "wishes": ["Желаю счастья, здоровья,", "успехов во всех начинаниях", "и исполнения всех желаний!"]},
-            "en": {"title": "🎉 Happy Birthday! 🎂",
+            "en": {"title": " Happy Birthday! ",
                    "wishes": ["Wishing you happiness, health,", "success in all your endeavors",
                               "and all your dreams come true!"]}
         },
         "newyear": {
             "bg": "#E0F7FA", "border": "#00BCD4",
             "title_color": "#006064", "name_color": "#00838F", "text_color": "#004D40",
-            "ru": {"title": "❄️ С Новым Годом! 🎄",
+            "ru": {"title": " С Новым Годом! ",
                    "wishes": ["Пусть этот год принесёт", "радость, удачу и тепло!", "Счастья тебе и близким!"]},
-            "en": {"title": "❄️ Happy New Year! 🎄", "wishes": ["May this year bring you", "joy, luck and warmth!",
+            "en": {"title": " Happy New Year! ", "wishes": ["May this year bring you", "joy, luck and warmth!",
                                                                "Happiness to you and your loved ones!"]}
         },
         "christmas": {
             "bg": "#E8F5E9", "border": "#4CAF50",
             "title_color": "#1B5E20", "name_color": "#2E7D32", "text_color": "#33691E",
-            "ru": {"title": "🎄 С Рождеством! ⭐",
+            "ru": {"title": " С Рождеством! ",
                    "wishes": ["Пусть в этот волшебный день", "сбудутся все твои мечты!", "Мира и добра тебе!"]},
-            "en": {"title": "🎄 Merry Christmas! ⭐",
+            "en": {"title": " Merry Christmas! ",
                    "wishes": ["May all your dreams come true", "on this magical day!", "Peace and joy to you!"]}
         }
     }
@@ -150,7 +151,7 @@ async def make_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if not args:
         await update.message.reply_text(
-            "❌ Укажи имя!\n"
+            " Укажи имя!\n"
             "Пример: /card Алекс birthday\n\n"
             "Доступные праздники: birthday, newyear, christmas"
         )
@@ -162,12 +163,12 @@ async def make_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
     valid_occasions = ["birthday", "newyear", "christmas"]
     if occasion not in valid_occasions:
         await update.message.reply_text(
-            f"❌ Неизвестный праздник: {occasion}\n"
+            f" Неизвестный праздник: {occasion}\n"
             f"Доступные: {', '.join(valid_occasions)}"
         )
         return
 
-    msg = await update.message.reply_text("🎨 Создаю открытку...")
+    msg = await update.message.reply_text(" Создаю открытку...")
 
     try:
         filepath = create_card(name, occasion)
@@ -203,8 +204,11 @@ def main():
     """Локальный запуск через polling (для тестов на ПК)."""
     application = get_application()
     logger.info("Бот запущен в режиме polling!")
-    application.run_polling()
+    application.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        webhook_url=f"https://greeting-project.onrender.com/webhook"
+    )
 
-
-if __name__ == "__main__":
-    main()
+    if __name__ == "__main__":
+        main()
