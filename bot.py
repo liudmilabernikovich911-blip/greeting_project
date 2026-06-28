@@ -20,7 +20,6 @@ from telegram.ext import (
     filters,
 )
 
-# Загружаем .env
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -29,19 +28,14 @@ ADMIN_IDS = os.getenv("ADMIN_IDS", "")
 if not BOT_TOKEN:
     raise ValueError("❌ BOT_TOKEN не найден! Создай файл .env")
 
-# Папка для открыток
 CARDS_DIR = Path("dist")
 CARDS_DIR.mkdir(parents=True, exist_ok=True)
 
-# Логи
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# ============ ГЕНЕРАТОР ОТКРЫТОК ============
-
 def get_fonts():
-    """Ищет системные шрифты."""
     font_paths = [
         "C:/Windows/Fonts/arial.ttf",
         "C:/Windows/Fonts/DejaVuSans-Bold.ttf",
@@ -110,22 +104,18 @@ def create_card(name: str, occasion: str = "birthday", language: str = None) -> 
     draw = ImageDraw.Draw(img)
     fonts = get_fonts()
 
-    # Рамка
     draw.rectangle([20, 20, 780, 580], outline=theme["border"], width=5)
 
-    # Заголовок
     title = lang_data["title"]
     bbox = draw.textbbox((0, 0), title, font=fonts['large'])
     x = (800 - (bbox[2] - bbox[0])) // 2
     draw.text((x, 80), title, fill=theme["title_color"], font=fonts['large'])
 
-    # Имя
     name_text = f"Dear {name}!" if language == "en" else f"Дорогой(ая) {name}!"
     bbox = draw.textbbox((0, 0), name_text, font=fonts['medium'])
     x = (800 - (bbox[2] - bbox[0])) // 2
     draw.text((x, 220), name_text, fill=theme["name_color"], font=fonts['medium'])
 
-    # Пожелания
     y = 320
     for line in lang_data["wishes"]:
         bbox = draw.textbbox((0, 0), line, font=fonts['small'])
@@ -133,17 +123,13 @@ def create_card(name: str, occasion: str = "birthday", language: str = None) -> 
         draw.text((x, y), line, fill=theme["text_color"], font=fonts['small'])
         y += 50
 
-    # Сохраняем
     safe_name = "".join(c for c in name if c.isalnum() or c in (' ', '-', '_')).strip()
     filename = CARDS_DIR / f"card_{occasion}_{safe_name}.png"
     img.save(filename)
     return str(filename)
 
 
-# ============ TELEGRAM БОТ ============
-
 async def start(update: Update, _context: ContextTypes.DEFAULT_TYPE):
-    """Обработка /start"""
     await update.message.reply_text(
         " Hello! I make congratulations cards!\n\n"
         " Comands:\n"
@@ -159,7 +145,6 @@ async def start(update: Update, _context: ContextTypes.DEFAULT_TYPE):
 
 
 async def make_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Создание открытки по команде /card"""
     args = context.args
 
     if not args:
@@ -198,22 +183,25 @@ async def make_card(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def unknown(update: Update, _context: ContextTypes.DEFAULT_TYPE):
-    """Ответ на неизвестные сообщения"""
     await update.message.reply_text(
         "Я понимаю только команды.\n"
         "Напиши /start для справки."
     )
 
 
-def main():
-    """Запуск бота"""
+def get_application():
+    """Создаёт приложение бота без запуска polling."""
     application = Application.builder().token(BOT_TOKEN).build()
-
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("card", make_card))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown))
+    return application
 
-    logger.info(" Бот запущен!")
+
+def main():
+    """Локальный запуск через polling (для тестов на ПК)."""
+    application = get_application()
+    logger.info("Бот запущен в режиме polling!")
     application.run_polling()
 
 
