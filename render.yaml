@@ -1,17 +1,9 @@
 ﻿services:
   - type: web
-    name: telegram-card-bot
+    name: greetings-bot
     runtime: python
-    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app:fastapi_app --host 0.0.0.0 --port $PORT
+    startCommand: gunicorn app:app
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
-      - key: BOT_TOKEN
-        sync: false
-      - key: WEBHOOK_URL
-        sync: false
-      - key: ADMIN_IDS
-        sync: false
-        value: ""

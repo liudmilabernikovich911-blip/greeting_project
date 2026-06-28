@@ -1,1 +1,3 @@
-﻿web: uvicorn app:fastapi_app --host 0.0.0.0 --port 
+﻿web: uvicorn app:fastapi_app --host 0.0.0.0 --port
+web: gunicorn app:app
+
