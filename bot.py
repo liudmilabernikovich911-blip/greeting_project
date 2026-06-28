@@ -24,6 +24,7 @@ load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 ADMIN_IDS = os.getenv("ADMIN_IDS", "")
+PORT = int(os.getenv("PORT", "10000"))
 
 if not BOT_TOKEN:
     raise ValueError("❌ BOT_TOKEN не найден! Создай файл .env")
