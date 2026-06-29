@@ -12,8 +12,8 @@ except ImportError:
     from create_card import create_card
 
 # ─── Токен бота ───
-BOT_TOKEN = "6701996903:AAG86hAkmORtKPQ-HYpZLquM9hiBNGoEKkg"
-TELEGRAM_BOT_TOKEN = "6701996903:AAG86hAkmORtKPQ-HYpZLquM9hiBNGoEKkg"
+BOT_TOKEN = "6701996903:AAHlm7xViI2walWzusxphV549OjyMjGfWho"
+TELEGRAM_BOT_TOKEN = "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"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
@@ -69,6 +69,11 @@ def handle_card(message):
         bot.send_message(message.chat.id, f"❌ Error: {e}")
 
 
+# Удаляем webhook, если он был установлен (например, из другого скрипта)
+bot.delete_webhook(drop_pending_updates=True)
+print("Webhook deleted, switching to polling...")
+
 # ─── Запуск ───
+bot.delete_webhook(drop_pending_updates=True)
 print("Bot is running...")
 bot.polling(none_stop=True)

@@ -1,16 +1,3 @@
-﻿# IDE
-.idea/
-.idea/workspace.xml
-
-# Python
+.env
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
-
-# Виртуальное окружение
-venv/
-.env
-
-# Логи
-*.log
