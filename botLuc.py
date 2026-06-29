@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()  # Загружает переменные из .env файла
+
 import telebot
 import os
 import sys
@@ -11,7 +14,7 @@ try:
 except ImportError:
     from create_card import create_card
 
-# ─── Токен из переменной окружения ───
+# ─── Токен из переменной окружения или .env ───
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN not set! Add it to environment variables or .env file.")
