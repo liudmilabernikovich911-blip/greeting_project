@@ -3,6 +3,7 @@ from create_card import create_card
 
 # Токен бота
 BOT_TOKEN = "6701996903:AAG86hAkmORtKPQ-HYpZLquM9hiBNGoEKkg"
+TELEGRAM_BOT_TOKEN="6701996903:AAG86hAkmORtKPQ-HYpZLquM9hiBNGoEKkg"
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
