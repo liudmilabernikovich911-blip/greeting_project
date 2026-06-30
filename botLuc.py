@@ -184,9 +184,5 @@ def _create_and_send_card(chat_id: int, name: str, occasion: str) -> None:
 # Запуск
 # ═══════════════════════════════════════
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 8080))
-    http_thread = threading.Thread(target=run_http_server, args=(port,), daemon=True)
-    http_thread.start()
-
-    print("Bot is running... Press Ctrl+C to stop.")
+    print("Bot is running...")
     bot.polling(none_stop=True, interval=1)
