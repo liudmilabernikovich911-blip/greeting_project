@@ -16,6 +16,5 @@ uvicorn~=0.49.0
 flask
 gunicorn
 typing_extensions~=4.15.0
-aiogram==3.x
 python-dotenv
 pyTelegramBotAPI~=4.34.0
